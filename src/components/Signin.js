@@ -19,16 +19,20 @@ export default function SignUp() {
     })
     const json = await response.json();
     console.log(json)
-    if (!json.success) {
-      document.getElementById("email-error-signinpage").style.visibility = "initial"
-    }
-    else if (json.success)
+    document.getElementById("email-error-signinpage").style.visibility = (!json.success)?"initial":"hidden";
+    document.getElementById("email-signinpage").style.border = (!json.success )?"2px solid red":"1px solid white"
+    document.getElementById("password-signinpage").style.border = (!json.success )?"2px solid red":"1px solid white"
+     if (json.success)
       navigate('/user-interface', { state: { email: credentials.email } })
 
 
   }
   const handlechange = (e) => {
     setcredentials({ ...credentials, [e.target.name]: e.target.value })
+  }
+  const registrationhandle = (e)=>{
+    e.preventDefault();
+    navigate("/Registration",{state : {email:""}})
   }
 
   return (
@@ -42,8 +46,8 @@ export default function SignUp() {
       <div className="form-box">
         <h1 className="signup-text-signupPage">Sign in</h1>
         <form action="signup" className="form" onSubmit={handlesubmit}>
-          <div className="email-signinpage-box"><input type="text" className="email-box" name='email' value={credentials.email} onChange={handlechange} placeholder='Email or Phone Number' /></div>
-          <div className="password-signinpage-box"><input type="password" className="password-box" name='password' value={credentials.password} onChange={handlechange} placeholder='Password' /></div>
+          <div className="email-signinpage-box"id="email-signinpage"><input type="text" className="email-signinpage"  name='email' value={credentials.email} onChange={handlechange} placeholder='Email or Phone Number' /></div>
+          <div className="password-signinpage-box"id="password-signinpage" ><input type="password" className="password-box" name='password' value={credentials.password} onChange={handlechange} placeholder='Password' /></div>
 
 
 
@@ -55,7 +59,7 @@ export default function SignUp() {
           <button className="SignUp-button-signUp-page">Sign in</button>
           <div className="or">OR</div>
 
-          <button className="Signin-code">Use a Sign-in code</button>
+          <button className="Signin-code" onClick={registrationhandle}>New to Netflix?</button>
           <a href="/loginhelp" className="forgot-password">Forgot password?</a>
 
         </form>

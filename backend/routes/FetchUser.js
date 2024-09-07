@@ -1,20 +1,41 @@
 const express = require('express')
 const router = express.Router();
 const User = require('../models/User')
+const bcrypt = require('bcryptjs')
+const { body, validationResult } = require("express-validator")
 
 
-router.post('/FetchUser', async(req,res)=>{
-    try {
-        const data = await User.findOne({email:req.body.email, password:req.body.password});
-        if(data){res.status(200).json({success:true})
-        console.log(data)}
-        else{res.status(404).json({success:false})
-    console.log("data not found")}
 
-    } catch (e) {
-        console.log(e)
-    }
-})
+router.post('/FetchUser', body('email', 'Invalid email').isEmail(),
+    body('password', 'password too short').isLength({ min: 4 }), async (req, res) => {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(400).json({ error: errors.array().toString(), success: false })
+            }
+            else {
+
+                const data = await User.findOne({ email: req.body.email });
+                if (data) {
+                    const comparepassword = await bcrypt.compare(req.body.password, data.password)
+                    if (comparepassword) {
+                        res.status(200).json({ success: true })
+                        console.log(data)
+                    }
+                    else {
+                        res.status(404).json({ success: false })
+                    }
+
+                }
+                else{
+                    res.status(400).json({error:"User not found"})
+                    console.log('User not found')
+                }
+            }
+            } catch (e) {
+                console.log(e)
+            }
+        })
 
 module.exports = router
 

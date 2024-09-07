@@ -5,10 +5,10 @@ const { body, validationResult } = require('express-validator');
 const myValidationResult = validationResult.withDefaults({
     formatter: error => error.msg,
 });
-
+const bcrypt = require("bcryptjs")
 router.post('/UpdateUser',
     body('email', 'Invalid email').isEmail(),
-    body('password', 'password too short').isLength({ min: 5 })
+    body('password', 'Password too short').isLength({ min: 5 })
     , async (req, res) => {
 
         try {
@@ -19,7 +19,9 @@ router.post('/UpdateUser',
             else {
                 const user = await User.findOne({ email: req.body.email });
                 if (user) {
-                    await User.updateOne({ email: req.body.email }, { $set: { password: req.body.password } });
+                    const salt = await bcrypt.genSalt(10);
+                    const securepassword = await bcrypt.hash(req.body.password,salt)
+                    await User.updateOne({ email: req.body.email }, { $set: { password: securepassword } });
                     res.status(200).json({ success: true })
                 }
                 else {

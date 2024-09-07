@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router();
 const User = require('../models/User')
 const { body, validationResult } = require("express-validator")
+const bcrypt = require("bcryptjs")
 const myValidationResult = validationResult.withDefaults({
     formatter: error => error.msg,
 });
@@ -9,32 +10,35 @@ const myValidationResult = validationResult.withDefaults({
 
 
 router.post('/UpdatePassword',
-    body('newpassword', 'password too short').isLength({ min: 5})
+    body('newpassword', 'password too short').isLength({ min: 5 })
     , async (req, res) => {
 
         try {
             const errors = myValidationResult(req);
             if (!errors.isEmpty()) {
-                res.status(400).json({ errors: errors.array().toString(),update:false })
+                res.status(400).json({ errors: errors.array().toString(), update: false })
             }
             else {
-                const error = validationResult(req)
-                const user = await User.findOne({ email: req.body.email });
-                if (user) {
-                    if (req.body.password != user.password) {
-                        res.status(400).json({ success: "wrong-current-password" , update:false})
+                    const user = await User.findOne({ email: req.body.email });
+                    if (user) {
+                        const comparepassword = await bcrypt.compare(req.body.password, user.password)
+                        if (!comparepassword) {
+                            res.status(400).json({ error: "wrong-current-password", success: false })
+                        }
+                        else {
+                            const salt = await bcrypt.genSalt(10);
+                            const securepassword = await bcrypt.hash(req.body.newpassword, salt)
+                            console.log(req.body.newpassword)
+                            await User.updateOne({ email: req.body.email }, { $set: { password: securepassword } })
+                            console.log("user updated successfully")
+                            res.status(200).json({ error: "updated", success: true })
+
+                        }
                     }
                     else {
-                        console.log(req.body.newpassword)
-                        await User.updateOne({ email: req.body.email }, { $set: { password: req.body.newpassword } })
-                        console.log("user updated successfully")
-                        res.status(200).json({ success: "updated",update:true })
-
+                        res.status(400).json({ error: "user not found", success: false })
                     }
-                }
-                else {
-                    res.status(400).json({error:"user not found",update:false})
-                }
+            
             }
         } catch (e) {
             console.log(e)

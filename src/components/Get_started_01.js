@@ -5,9 +5,9 @@ import { Link, useLocation,useNavigate} from "react-router-dom";
 
 
 export default function Get_started_1() {
-  const location = useLocation();
   const navigate  = useNavigate();
-  const email = location.state.emaill;
+  const {state} = useLocation();
+  const email = state.emaill;
   const handleclick = ()=>{
     navigate("/Registration",{state : {email : email}})
   }

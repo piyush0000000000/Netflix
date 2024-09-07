@@ -26,7 +26,7 @@ router.post("/createuser",
                 email : req.body.email,
                 password : securepassword
             })
-            res.json({success : true})
+            res.json({success : "registered"})
         }
     } catch (error) {
         console.log(error)

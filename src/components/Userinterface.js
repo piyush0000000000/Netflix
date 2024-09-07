@@ -17,34 +17,10 @@ export default function () {
   const navigate = useNavigate();
   const location = useLocation();
   const emaill = location.state.email;
-  const [email, setemail] = useState(" ")
   const updatepassword = ()=>{
     navigate("/updatepassword",{state:{email : emaill}})
   }
-  const handleEmail = (e) => {
-    setemail(e.target.value)
-  }
-  const Getstarted = async (e) => {
-    e.preventDefault();
-    const resp = await fetch('http://localhost:5000/api/CreateUser', {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email: email, password: "onlyemail" })
-
-    })
-    const json = await resp.json();
-
-    console.log(json);
-    if (!json.success) {
-      document.getElementById("email-error-text").style.display = 'block'
-      document.getElementById("email-input-section").style.border = "0.5px solid rgb(193, 17, 25)"
-
-    }
-    else if (json.success) {
-    }
-  }
+  
 
   function select() {
     console.log("i am selected")

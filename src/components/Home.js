@@ -19,39 +19,39 @@ import loading from "../loading.gif"
 export default function App() {
   const navigate = useNavigate()
   const [email, setemail] = useState(" ")
-  const handleEmail = (e)=>{
+  const handleEmail = (e) => {
     setemail(e.target.value)
   }
-  const Getstarted = async (e)=>{
+  const Getstarted = async (e) => {
     e.preventDefault();
-      const resp = await fetch('http://localhost:5000/api/CreateUser',{
-        method : "POST",
-        headers:{
-          'Content-Type' : 'application/json'
-        },
-        body:JSON.stringify({email : email, password :"onlyemail"})
-        
-      })
-      const json = await resp.json();
+    const resp = await fetch('http://localhost:5000/api/CreateUser', {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email: email, password: "onlyemail" })
 
-      console.log(json);
-      if(json.success === "validation-not-satisfied"){
-        document.getElementById("email-error-text").style.display = 'block'
-        document.getElementById("email-input-section").style.border = "0.5px solid rgb(193, 17, 25)"
-      
-      }
-      else if(json.success === "User-already-registered"){
-        document.getElementById("email-error-text").style.display = 'block'
-        document.getElementById("email-input-section").style.border = "0.5px solid rgb(193, 17, 25)"
-        document.getElementById("email-error-text").innerHTML = "This email is already registered with us, You can directly signin"
-        document.getElementById("email-error-text").style.left = "4px" 
+    })
+    const json = await resp.json();
 
-      }
-      else if(json.success){
-       navigate("/Get_started_01",{state : {emaill : email }})
-      }
+    console.log(json);
+    if (json.success === "validation-not-satisfied") {
+      document.getElementById("email-error-text").style.display = 'block'
+      document.getElementById("email-input-section").style.border = "0.5px solid rgb(193, 17, 25)"
+
+    }
+    else if (json.success === "User-already-registered") {
+      document.getElementById("email-error-text").style.display = 'block'
+      document.getElementById("email-input-section").style.border = "0.5px solid rgb(193, 17, 25)"
+      document.getElementById("email-error-text").innerHTML = "This email is already registered with us, You can directly signin"
+      document.getElementById("email-error-text").style.left = "4px"
+
+    }
+    else if (json.success === "registered") {
+      navigate("/Get_started_01", { state: { emaill: email } })
+    }
   }
-  
+
   function select() {
     console.log("i am selected")
     document.getElementById("btn-english-id").style.boxShadow = "0 0 1px 1px white"
@@ -243,30 +243,30 @@ export default function App() {
                 <span id="email-error-text"><img src={cross} alt="" />
                   Please enter a valid email address or phone number.</span>
               </div>
-              <Link to="/Get_started_01">
-              <button id="get-started-btn">
-                <span id="get-started-font" onClick={Getstarted} >Get started</span>
+              
+                <button id="get-started-btn">
+                  <span id="get-started-font" onClick={Getstarted} >Get started</span>
 
-                <img
-                  src={getstartedarrow}
-                  alt=""
-                  id="get-started-arrow"
-                />
-              </button></Link>
+                  <img
+                    src={getstartedarrow}
+                    alt=""
+                    id="get-started-arrow"
+                  />
+                </button>
               <span className="loading" loading={false}><img src="loading" alt="" /></span>
             </form>
           </span>
         </span>
       </section>
-      <div className="second-section">
-        <span className="second-section-text">
+      <div className="second-section section">
+        <span className="second-section-text section-1">
           <h1 className="second-section-text-heading">Enjoy on your TV</h1>
           <div className="second-section-text-smalltext">
             Watch on smart TVs, PlayStation, Xbox, Chromecast,<br />
             Apple TV, Blu-ray players and more.
           </div>
         </span>
-        <span className="second-section-video">
+        <span className="second-section-video section-2">
           <video
             className="video-1"
             src={secondsectionvideo}
@@ -275,11 +275,10 @@ export default function App() {
             playsInline
             loop
           ></video>
-          <img src={tv} alt="" className="tv" />
         </span>
       </div>
 
-      <div className="third-section">
+      <div className="third-section section">
         <span className="third-section-image-section">
           <img
             src={thirdimagephone}
@@ -423,8 +422,8 @@ export default function App() {
           >Ready to watch? Enter your email to create or restart your
             membership.</span
           >
-          <span id="email-input">
-            <form action="" id="email-form">
+          <span className="email-input-bottom">
+            <form action="" className='email-form-bottom'>
               <input
                 type="email"
                 name=""

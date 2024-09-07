@@ -17,6 +17,7 @@ export default function Updatepassword() {
   }
   const handlesubmit = async (e) => {
     if (creds.newpassword === creds.re_newpassword) {
+
       e.preventDefault();
       const data = await fetch('http://localhost:5000/api/UpdatePassword', {
         method: "POST",
@@ -24,23 +25,26 @@ export default function Updatepassword() {
         body: JSON.stringify({ email: email, password: creds.password, newpassword: creds.newpassword })
       })
       const response = await data.json();
-      
-      
-        
-            document.getElementById('wrong-current-password').style.visibility = (response.success === "wrong-current-password")?"initial":"hidden"
-            document.getElementById("currentpassword-input").style.border = (response.success === "wrong-current-password")?"2px solid red":"1px solid #8c8c8c"
-          document.getElementById('newpassword-mismatch').style.visibility = (response.errors === "password too short")?"initial":"hidden"
-          document.getElementById('newpassword-mismatch').innerHTML = (response.errors === "password too short")?"Your new password should be between 5-60 characters":""
-          if (response.success === "updated") {
-            console.log("updated")
-            navigate('/User-interface', { state: { email: email } })
-          }
-          
+      console.log(response)
+
+
+
+      document.getElementById('wrong-current-password').style.visibility = (response.error === "wrong-current-password") ? "initial" : "hidden"
+      document.getElementById("currentpassword-input").style.border = (response.error === "wrong-current-password") ? "2px solid red" : "1px solid #8c8c8c"
+      document.getElementById('newpassword-mismatch').style.visibility = (response.error === "password too short") ? "initial" : "hidden"
+      document.getElementById('newpassword-mismatch').innerHTML = (response.error === "password too short") ? "Your new password should be between 5-60 characters" : ""
+
+      if (response.error === "updated") {
+        console.log("updated")
+        navigate('/User-interface', { state: { email: email } })
+      }
     }
     else {
-
-      document.getElementById('newpassword-mismatch').style.visibility = 'initial'
+      document.getElementById('newpassword-input').style.border = " 2px solid red"
+      document.getElementById('renewpassword-input').style.border = " 2px solid red"
+      document.getElementById('newpassword-mismatch').style.visibility = "initial"
     }
+
   }
 
   return (
@@ -65,7 +69,7 @@ export default function Updatepassword() {
           <div className="heading-updatepassword"><h1>Change password</h1></div>
           <div className="smalltext-updatepassword"><h4>Protect your account with a unique password at least 6 characters long.</h4></div>
           <div className="form-updatepassword">
-            <input type="password" placeholder='Current Password' name='password' onChange={handlechange} value={creds.password} className="currentpassword-updatepassword form-element" id="currentpassword-input"/>
+            <input type="password" placeholder='Current Password' name='password' onChange={handlechange} value={creds.password} className="currentpassword-updatepassword form-element" id="currentpassword-input" />
             <div className="error-password " id='wrong-current-password'>Your current password does not match</div>
             <input type="password" placeholder='New Password (6-60 Characters)' name='newpassword' onChange={handlechange} value={creds.newpassword} className='newpassword-updatepassword form-element' id='newpassword-input' />
             <div className="error-password">Your password is too short.</div>
