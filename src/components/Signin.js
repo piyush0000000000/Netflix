@@ -43,6 +43,7 @@ export default function SignUp() {
           /></span>
 
       </header>
+      <div className="lower-content-signup">
       <div className="form-box">
         <h1 className="signup-text-signupPage">Sign in</h1>
         <form action="signup" className="form" onSubmit={handlesubmit}>
@@ -77,7 +78,7 @@ export default function SignUp() {
         </div>
       </div>
       <div className="box-SignUp"></div>
-
+      </div>
     </div></div>
   )
 }
